@@ -2,7 +2,7 @@ express = require 'express'
 request = require 'supertest'
 should = require 'should'
 Q = require 'q'
-require('../lib/log').verbose(true)
+require('../lib/log')#.verbose(true)
 mongoose = require 'mongoose'
 
 mre = require '../lib/endpoint'
@@ -87,7 +87,7 @@ describe 'Delete', ->
 
 			request(@app).del('/api/posts/' + data._id).end (err, res) ->
 				res.status.should.equal(200)
-				
+
 				mongoose.model('Post').findById data._id, (err, res) ->
 					should.not.exist(err)
 					should.not.exist(res)

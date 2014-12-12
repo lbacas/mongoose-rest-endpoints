@@ -102,7 +102,7 @@ module.exports = class Request
 			log 'ERROR:'.red, 'ID not provided in URL parameters'
 			err = httperror.forge('ID not provided', 400)
 			@$$runHook('pre_response_error', 'fetch', req, err).then (err) ->
-				res.send(err.message, err.code)
+				res.status(err.code).send(err.message)
 			, (err) ->
 				deferred.reject(err)
 
@@ -110,7 +110,7 @@ module.exports = class Request
 			log 'ERROR:'.red, 'ID not in Mongo format'
 			err = httperror.forge('Bad ID', 400)
 			@$$runHook('pre_response_error', 'fetch', req, err).then (err) ->
-				res.send(err.message, err.code)
+				res.status(err.code).send(err.message)
 			, (err) ->
 				deferred.reject(err)
 

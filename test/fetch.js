@@ -12,7 +12,7 @@ mongoose = require('mongoose');
 
 moment = require('moment');
 
-require('../lib/log').verbose(true);
+require('../lib/log');
 
 tracker = require('../lib/tracker');
 

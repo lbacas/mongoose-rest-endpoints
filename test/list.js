@@ -10,7 +10,7 @@ Q = require('q');
 
 mongoose = require('mongoose');
 
-require('../lib/log').verbose(true);
+require('../lib/log');
 
 moment = require('moment');
 

@@ -4,7 +4,8 @@ should = require 'should'
 Q = require 'q'
 
 mongoose = require 'mongoose'
-require('../lib/log').verbose(true)
+require('../lib/log')#.verbose(true)
+
 mre = require '../lib/endpoint'
 # Custom "Post" and "Comment" documents
 tracker = require '../lib/tracker'
@@ -87,7 +88,7 @@ describe 'Post', ->
 					number:8
 					string:'Foo'
 			]
-				
+
 
 			request(@app).post('/api/posts/bulk').send(data).end (err, res) ->
 				res.status.should.equal(201)
@@ -108,7 +109,7 @@ describe 'Post', ->
 					date:Date.now()
 					number:7
 			]
-				
+
 
 			request(@app).post('/api/posts/bulk').send(data).end (err, res) ->
 				# One succeeded. So we should get a 201. HOWEVER, the second two elements in the array should have status as rejected, with the appropriate code and message
@@ -133,11 +134,10 @@ describe 'Post', ->
 					date:Date.now()
 					number:7
 			]
-				
+
 
 			request(@app).post('/api/posts/bulk').send(data).end (err, res) ->
-				
+
 				res.status.should.equal(400)
 				done()
 
-		

@@ -4,7 +4,7 @@ should = require 'should'
 Q = require 'q'
 
 mongoose = require 'mongoose'
-require('../lib/log').verbose(true)
+require('../lib/log')#.verbose(true)
 mre = require '../lib/endpoint'
 # Custom "Post" and "Comment" documents
 tracker = require '../lib/tracker'
@@ -78,7 +78,7 @@ describe 'Post', ->
 
 			@endpoint.register(@app)
 
-			data = 
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -91,12 +91,12 @@ describe 'Post', ->
 
 		it 'should run middleware', (done) ->
 			@endpoint.addMiddleware('post', requirePassword('asdf')).register(@app)
-			data = 
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'
 
-			
+
 
 			request(@app).post('/api/posts/').query
 				password:'asdf'
@@ -113,7 +113,7 @@ describe 'Post', ->
 
 
 		it 'should run pre save', (done) ->
-			postData = 
+			postData =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -130,7 +130,7 @@ describe 'Post', ->
 				done()
 
 		it 'should handle a thrown error on pre save', (done) ->
-			postData = 
+			postData =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -148,7 +148,7 @@ describe 'Post', ->
 				done()
 
 		it 'should run pre response', (done) ->
-			postData = 
+			postData =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -172,7 +172,7 @@ describe 'Post', ->
 					done()
 
 
-		
+
 	describe 'Cascading relations', ->
 		beforeEach (done) ->
 			@endpoint = new mre('/api/posts', 'Post')
@@ -191,7 +191,7 @@ describe 'Post', ->
 				return data
 			.register(@app)
 
-			data = 
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -217,7 +217,7 @@ describe 'Post', ->
 			author = new aClass
 				name:'Testy McGee'
 			author.save =>
-				data = 
+				data =
 					date:Date.now()
 					number:5
 					string:'Test'
@@ -229,7 +229,7 @@ describe 'Post', ->
 				request(@app).post('/api/posts/').send(data).end (err, res) =>
 					console.log(res.body)
 					should.exist(res.body._related._author._id)
-					
+
 					done()
 
 
@@ -241,7 +241,7 @@ describe 'Post', ->
 
 
 
-			data = 
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -253,11 +253,11 @@ describe 'Post', ->
 			console.log 'About to post...'
 			request(@app).post('/api/posts/').send(data).end (err, res) =>
 				post = res.body
-				
+
 				post._related._comments.push
 					comment:'ffff5555'
 
-							
+
 				request(@app).put('/api/posts/' + post._id).send(post).end (err, res) ->
 					res.status.should.equal(200)
 					res.body._comments.length.should.equal(2)
@@ -266,7 +266,7 @@ describe 'Post', ->
 					res.body._related._comments[0].comment.should.equal('asdf1234')
 					res.body._related._comments[1].comment.should.equal('ffff5555')
 					done()
-	
+
 	describe 'Tracking interface', ->
 		beforeEach (done) ->
 			@endpoint = new mre('/api/posts', 'Post')
@@ -283,8 +283,8 @@ describe 'Post', ->
 				done()
 		it 'should run tracking interface on success', (done) ->
 
-		
-			
+
+
 			tracker.interface =
 				track: (params) ->
 					console.log 'Tracking params', params
@@ -294,8 +294,8 @@ describe 'Post', ->
 
 			@endpoint.register(@app)
 
-			
-			data = 
+
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'
@@ -312,8 +312,8 @@ describe 'Post', ->
 
 			@endpoint.register(@app)
 
-			
-			data = 
+
+			data =
 				date:Date.now()
 				number:5
 
@@ -329,12 +329,12 @@ describe 'Post', ->
 					done()
 
 			@endpoint.register(@app)
-			data = 
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'
 
-			
+
 
 			requestStart = moment().valueOf() - 100
 			request(@app).post('/api/posts/').set('X-Request-Start', requestStart.toString()).send(data).end (err, res) ->

@@ -27,17 +27,17 @@ module.exports = class Endpoint
 	 * @param String path 			the base URL for the endpoint
 	 * @param String modelId 		the name of the document
 	 * @param Object opts 			Additional options (see defaults below)
-	### 
+	###
 	constructor:(path, modelId, opts) ->
 		@path = path
 		@modelId = modelId
 		if typeof modelId is 'string'
 			@$modelClass = mongoose.model(modelId)
-		else 
+		else
 			@$modelClass = modelId
 		log "Creating endpoint at path: #{path}"
 		@$taps = {}
-		@options = 
+		@options =
 			queryParams:[]
 			#cascade:
 			#	allowedRelations:[]
@@ -51,7 +51,7 @@ module.exports = class Endpoint
 			@options = _.extend(@options, opts)
 
 
-		@$$middleware = 
+		@$$middleware =
 			fetch:[@$$trackingMiddleware(@)]
 			list:[@$$trackingMiddleware(@)]
 			post:[@$$trackingMiddleware(@)]
@@ -71,7 +71,7 @@ module.exports = class Endpoint
 	###
 	populate:(field, fields=null) ->
 
-		
+
 		if field instanceof Array
 			for p in field
 				@options.populate.push(p)
@@ -120,27 +120,27 @@ module.exports = class Endpoint
 		return @
 
 	###
-	 * Tap a function onto a hook. Hooks may pass a value through each function to get the final 
-	 * result (filter) or just execute all the functions in a row (action). 
-	 * Each function is structured the same; they just may have a null value for the 
+	 * Tap a function onto a hook. Hooks may pass a value through each function to get the final
+	 * result (filter) or just execute all the functions in a row (action).
+	 * Each function is structured the same; they just may have a null value for the
 	 * `data` argument (2nd argument).
 	 *
 	 * Functions look like this:
 	 * `function(arguments, data, next) {}`
-	 * 
-	 * ...and must either call next(data) (optionally with modified data) or just return a 
-	 * non-null value (the system assumes that a null return value means that next will be 
+	 *
+	 * ...and must either call next(data) (optionally with modified data) or just return a
+	 * non-null value (the system assumes that a null return value means that next will be
 	 * called instead)
 	 *
 	 * HOOKS:
 	 * * pre_filter (before execution [default values, remove fields, etc]). Note that the "fetch"
 	 * 		filter will be used for retrieving documents in PUT and DELETE requests before performing
 	 * 		operations on them. Useful for limiting the documents people have access to.
-	 * * post_retrieve (after retrieval of the model [maybe they can only do something 
+	 * * post_retrieve (after retrieval of the model [maybe they can only do something
 	 * 		if the model has a certain value]). Only applies on PUT/DELETE requests
 	 * * pre_response (after execution, before response [hide fields, modify, etc])
 	 * * pre_response_error (after execution, before response, if execution throws an error)
-	 * 
+	 *
 	 * @param String hook 		The name of the hook
 	 * @param String method 	The method (fetch, list, post, put, delete).
 	 * @param Function func 	Function to run on hook
@@ -169,7 +169,7 @@ module.exports = class Endpoint
 	###
 	 * Add standard express middleware to one of the five methods. "all" or "*"
 	 * apply for all five. Connect middleware syntax applies.
-	 * 
+	 *
 	 * @param String method 			Method name
 	 * @param Function middleware 		Connect-style middleware function
 	 * @return Endpoint for chaining
@@ -235,7 +235,7 @@ module.exports = class Endpoint
 				# Requests will set this
 				method:null
 			# Every response in MRE has code,data arguments
-			
+
 			res.post 'end', (next, data) ->
 				code = @statusCode
 				elapsed = moment().diff(@$mre.startTime)
@@ -258,7 +258,7 @@ module.exports = class Endpoint
 
 	###
 	 * Register the endpoints on an express app.
-	 * 
+	 *
 	 * @param Express app
 	###
 	register: (app) ->
@@ -271,36 +271,36 @@ module.exports = class Endpoint
 			new request(@).$fetch(req, res).then (response) ->
 
 				log 'About to send.'
-				res.send(200, response)
+				res.status(200).send(response)
 			, (err) ->
 				if err.code
-					res.send(err.code, err.message)
+					res.status(err.code).send(err.message)
 				else
-					res.send(500)
+					res.status(500)
 
 		app.get @path, @$$middleware.list, (req, res) =>
 			res.$mre.method = 'list'
 			log @path.green, 'request to ', 'LIST'.bold
 			new request(@).$list(req, res).then (response) ->
 
-				res.send(200, response)
+				res.status(200).send(response)
 			, (err) ->
 				if err.code
-					res.send(err.code, err.message)
+					res.status(err.code).send(err.message)
 				else
-					res.send(500)
+					res.status(500)
 
 		app.post @path, @$$middleware.post, (req, res) =>
 			res.$mre.method = 'post'
 			log @path.green, 'request to ', 'POST'.bold
 			new request(@).$post(req, res).then (response) ->
 
-				res.send(201, response)
+				res.status(201).send(response)
 			, (err) ->
 				if err.code
-					res.send(err.code, err.message)
+					res.status(err.code).send(err.message)
 				else
-					res.send(500)
+					res.status(500)
 
 		# Bulk post
 		if @options.allowBulkPost
@@ -310,24 +310,24 @@ module.exports = class Endpoint
 
 
 				new request(@).$bulkpost(req, res).then (response) ->
-					res.send(201, response)
+					res.status(201).send(response)
 				, (err) ->
 					if err.code
-						res.send(err.code, err)
+						res.status(err.code).send(err)
 					else
-						res.send(500)
+						res.status(500)
 
 		app.put @path + '/:id', @$$middleware.put, (req, res) =>
 			res.$mre.method = 'put'
 			log @path.green, 'request to ', 'PUT'.bold
 			new request(@).$put(req, res).then (response) ->
 
-				res.send(200, response)
+				res.status(200).send(response)
 			, (err) ->
 				if err.code
-					res.send(err.code, err.message)
+					res.status(err.code).send(err.message)
 				else
-					res.send(500)
+					res.status(500)
 
 
 		app.delete @path + '/:id',@$$middleware.delete, (req, res) =>
@@ -335,12 +335,12 @@ module.exports = class Endpoint
 			log @path.green, 'request to ', 'DELETE'.bold
 			new request(@).$delete(req, res).then ->
 
-				res.send(200)
+				res.status(200)
 			, (err) ->
 				if err.code
-						res.send(err.code, err.message)
+						res.status(err.code).send(err.message)
 				else
-					res.send(500)
+					res.status(500)
 
 	# Taps run on the request and are bound to request. Hence the @$$endpoint
 	$$constructFilterFromRequest:(req, data, next) ->
@@ -381,10 +381,9 @@ module.exports = class Endpoint
 							else
 								filter[k]= v
 
-						 
 
-							
+
+
 		next(filter)
-	
 
-	
+

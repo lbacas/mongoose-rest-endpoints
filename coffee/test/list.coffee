@@ -4,7 +4,7 @@ should = require 'should'
 Q = require 'q'
 
 mongoose = require 'mongoose'
-require('../lib/log').verbose(true)
+require('../lib/log')#.verbose(true)
 moment = require 'moment'
 mre = require '../lib/endpoint'
 # Custom "Post" and "Comment" documents
@@ -97,7 +97,7 @@ describe 'List', ->
 			@mod.remove (err, res) ->
 				done()
 		it 'should retrieve with no hooks', (done) ->
-			
+
 
 			@endpoint.register(@app)
 
@@ -223,7 +223,7 @@ describe 'List', ->
 					res.status.should.equal(200)
 					res.body.length.should.equal(0)
 					done()
-	
+
 	describe 'Populate', ->
 		beforeEach (done) ->
 			@endpoint = new mre('/api/posts', 'Post')
@@ -248,11 +248,11 @@ describe 'List', ->
 			@mod.remove (err, res) ->
 				done()
 		it 'should return populated data', (done) ->
-			
+
 
 			@endpoint.populate('_comments').register(@app)
 
-			
+
 			request(@app).get('/api/posts/').end (err, res) ->
 				res.status.should.equal(200)
 				res.body.length.should.equal(1)
@@ -262,7 +262,7 @@ describe 'List', ->
 				done()
 	describe 'Pagination', ->
 		beforeEach (done) ->
-			
+
 			# set up endpoints
 			@app = express()
 			@app.use(express.bodyParser())

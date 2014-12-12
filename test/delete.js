@@ -8,7 +8,7 @@ should = require('should');
 
 Q = require('q');
 
-require('../lib/log').verbose(true);
+require('../lib/log');
 
 mongoose = require('mongoose');
 

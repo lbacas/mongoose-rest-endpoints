@@ -4,7 +4,7 @@ should = require 'should'
 Q = require 'q'
 
 mongoose = require 'mongoose'
-require('../lib/log').verbose(true)
+require('../lib/log')#.verbose(true)
 mre = require '../lib/endpoint'
 # Custom "Post" and "Comment" documents
 
@@ -168,10 +168,10 @@ describe 'Put', ->
 					done()
 
 
-	
 
-	
-		
+
+
+
 	describe 'Cascading relations', ->
 		beforeEach (done) ->
 			@endpoint = new mre('/api/posts', 'Post')
@@ -197,7 +197,7 @@ describe 'Put', ->
 				return data
 			.register(@app)
 
-			data = 
+			data =
 				date:Date.now()
 				number:5
 				string:'Test'

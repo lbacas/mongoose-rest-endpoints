@@ -7,7 +7,7 @@ mongoose = require 'mongoose'
 
 moment = require 'moment'
 
-require('../lib/log').verbose(true)
+require('../lib/log')#.verbose(true)
 tracker = require '../lib/tracker'
 mre = require '../lib/endpoint'
 # Custom "Post" and "Comment" documents
@@ -84,11 +84,11 @@ describe 'Fetch', ->
 			@mod.remove ->
 				done()
 		it 'should retrieve with no hooks', (done) ->
-			
+
 
 			@endpoint.register(@app)
 
-			
+
 			request(@app).get('/api/posts/' + @mod._id).end (err, res) ->
 				console.log res.text
 				res.status.should.equal(200)
@@ -139,7 +139,7 @@ describe 'Fetch', ->
 				done()
 
 
-		
+
 	describe 'With middleware', ->
 		beforeEach (done) ->
 			@endpoint = new mre('/api/posts', 'Post')
@@ -159,11 +159,11 @@ describe 'Fetch', ->
 			@mod.remove ->
 				done()
 		it 'should retrieve with middleware', (done) ->
-			
+
 			@endpoint.addMiddleware('fetch', requirePassword('asdf'))
 			@endpoint.register(@app)
 
-			
+
 			request(@app).get('/api/posts/' + @mod._id).query
 				password:'asdf'
 			.end (err, res) ->
@@ -176,7 +176,7 @@ describe 'Fetch', ->
 			@endpoint.addMiddleware('fetch', requirePassword('asdf'))
 			@endpoint.register(@app)
 
-			
+
 			request(@app).get('/api/posts/' + @mod._id).query
 				password:'ffff'
 			.end (err, res) ->
@@ -204,7 +204,7 @@ describe 'Fetch', ->
 			mod.cascadeSave (err, res) =>
 				@mod = res
 				done()
-		afterEach (done) -> 
+		afterEach (done) ->
 			@mod.remove ->
 				done()
 		it 'should populate on _related', (done) ->
@@ -267,7 +267,7 @@ describe 'Fetch', ->
 
 				@endpoint.register(@app)
 
-				
+
 				request(@app).get('/api/posts/' + @mod._id).end (err, res) ->
 					console.log 'Ended'
 		it 'should run tracking interface on error', (done) ->
@@ -280,7 +280,7 @@ describe 'Fetch', ->
 
 			@endpoint.register(@app)
 
-			
+
 			request(@app).get('/api/posts/asdf').end (err, res) ->
 				console.log 'Ended'
 
