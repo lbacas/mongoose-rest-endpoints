@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 		exec:{
 			test: {
 				cmd:function(ex) {
-					return f('NODE_ENV=test mocha %s', ex)
+					return f('NODE_ENV=test node_modules/mocha/bin/mocha %s', ex)
 				}
 			}
 		},
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
 		var mongoose = require('mongoose');
 		var done = this.async();
 		mongoose.connect('mongodb://localhost/mre_test')
-		mongoose.connection.on('open', function () { 
+		mongoose.connection.on('open', function () {
 			mongoose.connection.db.dropDatabase(function(err) {
 				if(err) {
 					console.log(err);
