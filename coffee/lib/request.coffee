@@ -26,7 +26,7 @@ module.exports = class Request
 
 		@$$endpoint = endpoint
 
-	
+
 
 	$$runHook:(hook, method, args, mod) ->
 		log 'Running hook on ' + hook.green + '::' + method.green
@@ -35,7 +35,7 @@ module.exports = class Request
 			log hook.green + '::' + method.green + ' - ', 'Data is now:', data
 			if data instanceof Error
 				return deferred.reject(data)
-			try 
+			try
 				# Now you MUST call next explicitly regardless of whether it is sychronous or not. To
 				# avoid confusion with coffee script implicitly returning last value
 				_.bind(f, @, a, data, next)()
@@ -53,7 +53,7 @@ module.exports = class Request
 		else
 			funcs = taps[hook][method]
 
-			
+
 			next = (final) ->
 				log hook.green + '::' + method.green + ' - ', 'running final method', final
 				if final instanceof Error
@@ -66,7 +66,7 @@ module.exports = class Request
 			for func in funcs
 
 				next = _.bind(runFunction, @, func, next, args)
-			
+
 			next(mod)
 
 		return deferred.promise
@@ -83,7 +83,7 @@ module.exports = class Request
 		populatePath = (path, doc) ->
 			d = Q.defer()
 			doc.populate path, (err, doc) ->
-				console.log 'Populate finished;', doc
+				log 'Populate finished;', doc
 				d.resolve()
 			return d.promise
 
@@ -137,7 +137,7 @@ module.exports = class Request
 							deferred.reject(err)
 						, (err) ->
 							deferred.reject(err)
-	
+
 					else
 						@$$runHook('post_retrieve', 'fetch', req, model).then (model) =>
 							@$$runHook('pre_response', 'fetch', req, model.toObject()).then (response) =>
@@ -169,9 +169,9 @@ module.exports = class Request
 			if @$$endpoint.options.pagination
 				log 'Paginating'
 				# Get total
-				# 
+				#
 				@$$modelClass.count filter, (err, count) =>
-					
+
 					if err
 						log 'ERROR:'.red, 'Count could not be retrieved:', err.message
 						@$$runHook('pre_response_error', 'list', req, httperror.forge('Could not retrieve collection', 500)).then (err) ->
@@ -244,7 +244,7 @@ module.exports = class Request
 		deferred = Q.defer()
 		log 'Running ' + 'POST'.bold
 		model = new @$$modelClass(req.body)
-			
+
 		@$$runHook('pre_save', 'post', req, model).then (model) =>
 			if @$$endpoint.options.cascade?
 				log 'Running cascade save'
@@ -263,7 +263,7 @@ module.exports = class Request
 								deferred.resolve(response)
 							, (err) ->
 								deferred.reject(err)
-				, 
+				,
 					limit:@$$endpoint.options.cascade.allowedRelations
 					filter:@$$endpoint.options.cascade.filter
 			else
@@ -290,7 +290,7 @@ module.exports = class Request
 				deferred.reject(err)
 			, (err) ->
 				deferred.reject(err)
-					
+
 		return deferred.promise
 
 
@@ -299,10 +299,10 @@ module.exports = class Request
 		model = new @$$modelClass(obj)
 		@$$runHook('pre_save', 'bulkpost', req, model).then (data) =>
 			log 'Successfuly ran pre_save hook: ', JSON.stringify(data)
-			
-			
+
+
 			log 'Saving normally (no cascade allowed on bulkpost)'
-		
+
 			model.save (err, model) =>
 				if err
 					log 'ERROR:'.red, 'Save failed:', err.message
@@ -313,7 +313,7 @@ module.exports = class Request
 				else
 					log 'Finished save, resolving'
 					deferred.resolve()
-		
+
 		, (err) =>
 			log 'ERROR:'.red, 'Error running pre_filter hook: ', err.message
 			@$$runHook('pre_response_error', 'bulkpost', req, httperror.forge(err, if err.code? then err.code else 500)).then (err) ->
@@ -348,7 +348,7 @@ module.exports = class Request
 						resolvedCount++
 					else
 						rejectedCount++
-							
+
 
 				if resolvedCount and !rejectedCount
 					log('Running pre response post hook')
@@ -366,7 +366,7 @@ module.exports = class Request
 				if results[0].reason?
 					results.code = results[0].reason.code
 				deferred.reject(results)
-					
+
 		return deferred.promise
 
 	$put:(req, res) ->
@@ -409,7 +409,7 @@ module.exports = class Request
 
 						@$$runHook('post_retrieve', 'put', req, model).then (model) =>
 							# Now parse the data
-							# 
+							#
 							data = req.body
 							delete data._id
 							delete data.__v
@@ -428,12 +428,12 @@ module.exports = class Request
 										else
 											log 'Cascade saved. Populating', model
 											@$$populateDocument(model).then =>
-												
+
 												@$$runHook('pre_response', 'put', req, model.toObject()).then (response) ->
 													deferred.resolve(response)
 												, (err) ->
 													deferred.reject(err)
-									, 
+									,
 										limit:@$$endpoint.options.cascade.allowedRelations
 										filter:@$$endpoint.options.cascade.filter
 								else
@@ -471,7 +471,7 @@ module.exports = class Request
 				, (err) ->
 					deferred.reject(err)
 
-					
+
 		return deferred.promise
 
 	$delete:(req, res) ->
@@ -538,14 +538,14 @@ module.exports = class Request
 					deferred.reject(err)
 
 
-					
+
 		return deferred.promise
 
 
 	$$getPaginationConfig:(req) ->
 		data = req.query
 
-		result = 
+		result =
 			perPage:data.perPage
 			page:data.page
 			sortField:data.sortField
@@ -559,5 +559,5 @@ module.exports = class Request
 
 		return result
 
-	
-	
+
+
