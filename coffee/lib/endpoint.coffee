@@ -276,7 +276,7 @@ module.exports = class Endpoint
 				if err.code
 					res.status(err.code).send(err.message)
 				else
-					res.status(500)
+					res.status(500).send()
 
 		app.get @path, @$$middleware.list, (req, res) =>
 			res.$mre.method = 'list'
@@ -288,7 +288,7 @@ module.exports = class Endpoint
 				if err.code
 					res.status(err.code).send(err.message)
 				else
-					res.status(500)
+					res.status(500).send()
 
 		app.post @path, @$$middleware.post, (req, res) =>
 			res.$mre.method = 'post'
@@ -300,7 +300,7 @@ module.exports = class Endpoint
 				if err.code
 					res.status(err.code).send(err.message)
 				else
-					res.status(500)
+					res.status(500).send()
 
 		# Bulk post
 		if @options.allowBulkPost
@@ -315,7 +315,7 @@ module.exports = class Endpoint
 					if err.code
 						res.status(err.code).send(err)
 					else
-						res.status(500)
+						res.status(500).send()
 
 		app.put @path + '/:id', @$$middleware.put, (req, res) =>
 			res.$mre.method = 'put'
@@ -327,7 +327,7 @@ module.exports = class Endpoint
 				if err.code
 					res.status(err.code).send(err.message)
 				else
-					res.status(500)
+					res.status(500).send()
 
 
 		app.delete @path + '/:id',@$$middleware.delete, (req, res) =>
@@ -335,12 +335,12 @@ module.exports = class Endpoint
 			log @path.green, 'request to ', 'DELETE'.bold
 			new request(@).$delete(req, res).then ->
 
-				res.status(200)
+				res.status(200).send()
 			, (err) ->
 				if err.code
 						res.status(err.code).send(err.message)
 				else
-					res.status(500)
+					res.status(500).send()
 
 	# Taps run on the request and are bound to request. Hence the @$$endpoint
 	$$constructFilterFromRequest:(req, data, next) ->
