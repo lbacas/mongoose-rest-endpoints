@@ -148,7 +148,7 @@ module.exports = class Endpoint
 	tap:(hook, method, func) ->
 		log 'Tapping onto: ', hook.green + '::' + method.green
 		if method is '*'
-			methods = ['fetch','list','create','update','delete']
+			methods = ['fetch','list','post','put','delete']
 		else
 			methods = [method]
 
